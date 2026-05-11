@@ -70,7 +70,7 @@
   tbody tr:hover { background: var(--surface2); }
   tbody td { padding: 11px 12px; font-family: var(--font-mono); font-size: 12px; white-space: nowrap; }
   .tc { font-weight: 500; color: var(--accent); font-size: 13px; }
-  .nc { color: var(--text); font-family: var(--font-head); font-size: 12px; max-width: 150px; overflow: hidden; text-overflow: ellipsis; }
+  .nc { color: var(--text); font-family: var(--font-head); font-size: 12px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
   .lv { color: var(--muted); }
   .db { background: transparent; border: 0.5px solid rgba(248,113,113,0.25); color: var(--neg); padding: 3px 8px; border-radius: 4px; font-size: 10px; cursor: pointer; font-family: var(--font-mono); }
   .db:hover { background: rgba(248,113,113,0.1); }
@@ -87,12 +87,13 @@
 
   .mo { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
   .mo.open { display: flex; }
-  .mbox { background: var(--surface); border: 0.5px solid var(--border2); border-radius: 16px; padding: 2rem; width: 420px; max-width: 95vw; }
+  .mbox { background: var(--surface); border: 0.5px solid var(--border2); border-radius: 16px; padding: 2rem; width: 440px; max-width: 95vw; }
   .mbox h2 { font-size: 18px; font-weight: 600; margin-bottom: 1.5rem; }
   .fg { margin-bottom: 1rem; }
   .fg label { display: block; font-size: 10px; color: var(--muted); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
   .fg input { width: 100%; background: var(--bg); border: 0.5px solid var(--border2); color: var(--text); padding: 10px 12px; border-radius: 8px; font-family: var(--font-mono); font-size: 14px; outline: none; }
   .fg input:focus { border-color: var(--accent); }
+  .fg small { display: block; font-size: 10px; color: var(--muted); font-family: var(--font-mono); margin-top: 4px; }
   .fr { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .ma { display: flex; gap: 10px; margin-top: 1.5rem; }
   .bs { flex: 1; background: var(--accent); color: #0a0a0f; border: none; padding: 11px; border-radius: 8px; font-family: var(--font-head); font-size: 14px; font-weight: 600; cursor: pointer; }
@@ -138,7 +139,7 @@
     </div>
     <div class="card">
       <div class="ctitle">Performance je Position (%)</div>
-      <div id="barwrap" style="position:relative;height:440px"><canvas id="bar" role="img" aria-label="Performance"></canvas></div>
+      <div id="barwrap" style="position:relative;height:460px"><canvas id="bar" role="img" aria-label="Performance"></canvas></div>
     </div>
   </div>
 
@@ -154,14 +155,14 @@
     <div class="tw">
       <table>
         <thead><tr>
-          <th onclick="sort('ticker')">Ticker</th>
-          <th onclick="sort('name')">Name</th>
-          <th onclick="sort('shares')">Stück</th>
-          <th onclick="sort('entry')">Einstieg</th>
-          <th onclick="sort('price')">Aktuell</th>
-          <th onclick="sort('value')">Wert</th>
-          <th onclick="sort('pnlPct')">P&L %</th>
-          <th onclick="sort('pnlEur')">P&L €</th>
+          <th onclick="srt('ticker')">Ticker</th>
+          <th onclick="srt('name')">Name</th>
+          <th onclick="srt('shares')">Stück</th>
+          <th onclick="srt('entry')">Einstieg</th>
+          <th onclick="srt('price')">Aktuell</th>
+          <th onclick="srt('value')">Wert</th>
+          <th onclick="srt('pnlPct')">P&L %</th>
+          <th onclick="srt('pnlEur')">P&L €</th>
           <th></th>
         </tr></thead>
         <tbody id="tbody"></tbody>
@@ -172,11 +173,11 @@
   <div class="bot">
     <div class="card">
       <div class="ctitle">Ereignisse & Termine</div>
-      <div class="ei"><div class="ed" style="background:#c8f04a"></div><div><div class="et">Amazon Q1 Earnings — Ergebnis auswerten</div><div class="edt">Mai 2026 · AMZN</div></div></div>
-      <div class="ei"><div class="ed" style="background:#f87171"></div><div><div class="et">Rheinmetall — NATO-Budget & Ukraine beobachten</div><div class="edt">Laufend · RHM</div></div></div>
-      <div class="ei"><div class="ed" style="background:#a78bfa"></div><div><div class="et">Microsoft Build — AI-Ankündigungen erwartet</div><div class="edt">Mai 2026 · MSF</div></div></div>
+      <div class="ei"><div class="ed" style="background:#c8f04a"></div><div><div class="et">Rheinmetall — NATO-Budget & Ukraine beobachten</div><div class="edt">Laufend · RHM</div></div></div>
       <div class="ei"><div class="ed" style="background:#60a5fa"></div><div><div class="et">Meta Q2 Earnings</div><div class="edt">Juli 2026 · META</div></div></div>
+      <div class="ei"><div class="ed" style="background:#a78bfa"></div><div><div class="et">Microsoft Build — AI-Ankündigungen erwartet</div><div class="edt">Mai 2026 · MSF</div></div></div>
       <div class="ei"><div class="ed" style="background:#fb923c"></div><div><div class="et">NVIDIA Q2 Earnings</div><div class="edt">Aug 2026 · NVD</div></div></div>
+      <div class="ei"><div class="ed" style="background:#f87171"></div><div><div class="et">Palantir Q2 Earnings</div><div class="edt">Aug 2026 · PTX</div></div></div>
     </div>
     <div class="card">
       <div class="ctitle">Notizen</div>
@@ -190,8 +191,19 @@
 <div class="mo" id="modal" onclick="if(event.target===this)closeModal()">
   <div class="mbox">
     <h2>Position hinzufügen</h2>
-    <div class="fg"><label>Ticker (Trade Republic Symbol)</label><input type="text" id="ft" placeholder="z.B. ABEA, RHM, META"></div>
-    <div class="fg"><label>Name</label><input type="text" id="fn" placeholder="z.B. Alphabet A"></div>
+    <div class="fg">
+      <label>Trade Republic Ticker</label>
+      <input type="text" id="ft" placeholder="z.B. RHM, PTX, SXR8">
+    </div>
+    <div class="fg">
+      <label>Yahoo Finance Symbol (für Kurse)</label>
+      <input type="text" id="fy" placeholder="z.B. RHM.DE, PLTR, SXR8.DE">
+      <small>Für deutsche Aktien/ETFs meist Ticker + .DE · US-Aktien meist gleich</small>
+    </div>
+    <div class="fg">
+      <label>Name</label>
+      <input type="text" id="fn" placeholder="z.B. Palantir Technologies">
+    </div>
     <div class="fr">
       <div class="fg"><label>Stückzahl</label><input type="number" id="fs" placeholder="10" step="0.000001" min="0"></div>
       <div class="fg"><label>Einstiegspreis (€)</label><input type="number" id="fe" placeholder="100.00" step="0.01" min="0"></div>
@@ -204,54 +216,74 @@
 </div>
 
 <script>
+// Trade Republic Ticker → Yahoo Finance Symbol
 const TMAP = {
-  'SXR8':'SXR8.DE','META':'META','RHM':'RHM.DE','MSF':'MSFT',
-  'SXRV':'SXRV.DE','ABEA':'GOOGL','NVD':'NVDA','DYH':'DYH.DE',
-  'PPFB':'PPFB.DE','ORC':'ORC','EUNL':'EUNL.DE','UPAB':'UPAB.DE',
-  'PTX':'PTX','ABS2':'ABS2.DE','IYAA':'IYAA.DE','PCU':'PCU',
-  'Z4Q':'Z4Q.DE','HAL':'HAL','SQ3':'SQ3.DE','CHV':'CVX',
-  'KOZ1':'KOZ1.DE','68V':'68V.DE'
+  'SXR8':  'SXR8.DE',   // iShares Core S&P 500 ETF
+  'META':  'META',       // Meta Platforms
+  'RHM':   'RHM.DE',    // Rheinmetall
+  'MSF':   'MSFT',      // Microsoft
+  'SXRV':  'SXRV.DE',   // iShares NASDAQ 100 ETF
+  'ABEA':  'GOOGL',     // Alphabet A
+  'NVD':   'NVDA',      // NVIDIA
+  'DYH':   'TGT',       // Target
+  'PPFB':  'PPFB.DE',   // WisdomTree Physical Gold ETF
+  'ORC':   'ORCL',      // Oracle
+  'EUNL':  'EUNL.DE',   // iShares Core MSCI World ETF
+  'UPAB':  'UPS',       // United Parcel Service B
+  'PTX':   'PLTR',      // Palantir Technologies
+  'ABS2':  'ABS.VI',    // PORR AG (Vienna)
+  'IYAA':  'IVN.TO',    // Ivanhoe Mines (Toronto)
+  'PCU':   'SCCO',      // Southern Copper
+  'Z4Q':   'Z4Q.DE',    // Kongsberg Gruppen (Frankfurt)
+  'HAL':   'HAL',       // Halliburton
+  'SQ3':   'SQ',        // Block (ehem. Square)
+  'CHV':   'CVX',       // Chevron
+  'KOZ1':  'KOG.OL',    // Kongsberg Gruppen (Oslo)
+  '68V':   'BKR',       // Baker Hughes
 };
 
 const DEFAULTS = [
-  {ticker:'SXR8',name:'iShares Core S&P 500 ETF',shares:12.804963,entry:591.58},
-  {ticker:'META',name:'Meta Platforms',shares:8.226692,entry:559.40},
-  {ticker:'RHM',name:'Rheinmetall',shares:3.299411,entry:1205.82},
-  {ticker:'MSF',name:'Microsoft',shares:5.721801,entry:371.52},
-  {ticker:'SXRV',name:'iShares Core MSCI World ETF',shares:1.378358,entry:1157.57},
-  {ticker:'ABEA',name:'Alphabet A',shares:5.217542,entry:287.49},
-  {ticker:'NVD',name:'NVIDIA',shares:9.333479,entry:182.27},
-  {ticker:'DYH',name:'Delivery Hero',shares:13.297872,entry:75.26},
-  {ticker:'PPFB',name:'Paperfox ETF',shares:16.832847,entry:58.81},
-  {ticker:'ORC',name:'Orchid Island Capital',shares:7.534659,entry:132.85},
-  {ticker:'EUNL',name:'iShares Core MSCI Europe ETF',shares:9.959643,entry:106.13},
-  {ticker:'UPAB',name:'UBS MSCI All Country Asia ETF',shares:13.904338,entry:71.99},
-  {ticker:'PTX',name:'Phibro Animal Health',shares:8.525149,entry:117.42},
-  {ticker:'ABS2',name:'ABS2 ETF',shares:18.931420,entry:29.05},
-  {ticker:'IYAA',name:'iShares Asia Pacific ETF',shares:96.292729,entry:10.39},
-  {ticker:'PCU',name:'PCU Corp',shares:4.381151,entry:92.44},
-  {ticker:'Z4Q',name:'Z4Q ETF',shares:1.588810,entry:15.74},
-  {ticker:'HAL',name:'Halliburton',shares:18.155410,entry:27.60},
-  {ticker:'SQ3',name:'SQ3 ETF',shares:9.152700,entry:60.09},
-  {ticker:'CHV',name:'Chevron',shares:3.474635,entry:144.19},
-  {ticker:'KOZ1',name:'KOZ1 ETF',shares:1.588810,entry:15.74},
-  {ticker:'68V',name:'68V ETF',shares:11.481056,entry:43.63},
+  {ticker:'SXR8', name:'Core S&P 500 ETF (Acc)',          shares:12.804963, entry:591.58},
+  {ticker:'META', name:'Meta Platforms (A)',               shares:8.226692,  entry:559.40},
+  {ticker:'RHM',  name:'Rheinmetall',                     shares:3.299411,  entry:1205.82},
+  {ticker:'MSF',  name:'Microsoft',                       shares:5.721801,  entry:371.52},
+  {ticker:'SXRV', name:'NASDAQ 100 ETF (Acc)',            shares:1.378358,  entry:1157.57},
+  {ticker:'ABEA', name:'Alphabet (A)',                    shares:5.217542,  entry:287.49},
+  {ticker:'NVD',  name:'NVIDIA',                          shares:9.333479,  entry:182.27},
+  {ticker:'DYH',  name:'Target',                          shares:13.297872, entry:75.26},
+  {ticker:'PPFB', name:'Physical Gold USD (Acc)',         shares:16.832847, entry:58.81},
+  {ticker:'ORC',  name:'Oracle',                          shares:7.534659,  entry:132.85},
+  {ticker:'EUNL', name:'Core MSCI World ETF (Acc)',       shares:9.959643,  entry:106.13},
+  {ticker:'UPAB', name:'United Parcel Service (B)',       shares:13.904338, entry:71.99},
+  {ticker:'PTX',  name:'Palantir Technologies',           shares:8.525149,  entry:117.42},
+  {ticker:'ABS2', name:'PORR AG',                        shares:18.931420, entry:29.05},
+  {ticker:'IYAA', name:'Ivanhoe Mines',                   shares:96.292729, entry:10.39},
+  {ticker:'PCU',  name:'Southern Copper',                 shares:4.381151,  entry:92.44},
+  {ticker:'Z4Q',  name:'Kongsberg Maritime (Frankfurt)',  shares:1.588810,  entry:15.74},
+  {ticker:'HAL',  name:'Halliburton',                     shares:18.155410, entry:27.60},
+  {ticker:'SQ3',  name:'Block',                           shares:9.152700,  entry:60.09},
+  {ticker:'CHV',  name:'Chevron',                         shares:3.474635,  entry:144.19},
+  {ticker:'KOZ1', name:'Kongsberg Gruppen (Oslo)',        shares:1.588810,  entry:15.74},
+  {ticker:'68V',  name:'Baker Hughes',                    shares:11.481056, entry:43.63},
 ];
 
 const COLORS=['#c8f04a','#7b61ff','#60a5fa','#f87171','#fb923c','#34d399','#f472b6','#a78bfa','#fbbf24','#2dd4bf','#e879f9','#38bdf8','#86efac','#fca5a5','#fdba74','#c084fc','#67e8f9','#bbf7d0','#fde68a','#ddd6fe','#a5f3fc','#d9f99d'];
 
-let positions=[],prices={},sk=null,sd=1,PC=null,BC=null;
+let positions=[], prices={}, sk=null, sd=1, PC=null, BC=null;
 
 function load(){
-  try{const s=localStorage.getItem('enzo_v3');positions=s?JSON.parse(s):DEFAULTS.map((p,i)=>({...p,id:i+1}));}
+  try{const s=localStorage.getItem('enzo_v4');positions=s?JSON.parse(s):DEFAULTS.map((p,i)=>({...p,id:i+1}));}
   catch{positions=DEFAULTS.map((p,i)=>({...p,id:i+1}));}
-  try{const n=localStorage.getItem('enzo_notes2');if(n)document.getElementById('notes').value=n;}catch{}
+  try{const n=localStorage.getItem('enzo_notes');if(n)document.getElementById('notes').value=n;}catch{}
 }
-function save(){localStorage.setItem('enzo_v3',JSON.stringify(positions));}
-function saveNotes(){localStorage.setItem('enzo_notes2',document.getElementById('notes').value);const b=event.target;b.textContent='✓ Gespeichert';setTimeout(()=>b.textContent='Speichern',1500);}
+function save(){localStorage.setItem('enzo_v4',JSON.stringify(positions));}
+function saveNotes(){
+  localStorage.setItem('enzo_notes',document.getElementById('notes').value);
+  const b=event.target;b.textContent='✓ Gespeichert';setTimeout(()=>b.textContent='Speichern',1500);
+}
 
-async function fetchPrice(tr){
-  const yh=TMAP[tr]||tr+'.DE';
+async function fetchPrice(pos){
+  const yh=pos.yahoo||TMAP[pos.ticker]||pos.ticker+'.DE';
   for(const host of['query1','query2']){
     try{
       const r=await fetch(`https://${host}.finance.yahoo.com/v8/finance/chart/${yh}?interval=1d&range=1d`);
@@ -271,7 +303,7 @@ async function fetchAll(){
   let done=0,total=positions.length;
   for(const pos of positions){
     document.getElementById('prog').textContent=`${done}/${total} laden...`;
-    const p=await fetchPrice(pos.ticker);
+    const p=await fetchPrice(pos);
     if(p!==null)prices[pos.ticker]=p;
     done++;
     renderTable();renderMetrics();renderCharts();
@@ -280,11 +312,13 @@ async function fetchAll(){
   const failed=total-loaded;
   document.getElementById('lu').textContent='Aktualisiert: '+new Date().toLocaleString('de-DE');
   document.getElementById('prog').textContent='';
-  document.getElementById('sbar').innerHTML=`<span style="color:var(--pos)">${loaded} geladen ✓</span>`+(failed>0?` · <span style="color:var(--neg)">${failed} nicht verfügbar</span>`:'');
+  document.getElementById('sbar').innerHTML=
+    `<span style="color:var(--pos)">${loaded} geladen ✓</span>`+
+    (failed>0?` · <span style="color:var(--neg)">${failed} nicht verfügbar (Symbol prüfen)</span>`:'');
   btn.disabled=false;icon.className='';icon.textContent='↻';
 }
 
-function rows(){
+function getRows(){
   const q=document.getElementById('search').value.toLowerCase();
   let r=positions.map(p=>{
     const price=prices[p.ticker];
@@ -294,18 +328,32 @@ function rows(){
     const pnlPct=price?((price-p.entry)/p.entry)*100:null;
     return{...p,price,inv,value:val,pnlEur,pnlPct};
   }).filter(r=>!q||r.ticker.toLowerCase().includes(q)||r.name.toLowerCase().includes(q));
-  if(sk){r.sort((a,b)=>{let av=a[sk],bv=b[sk];if(av==null)av=sd>0?-Infinity:Infinity;if(bv==null)bv=sd>0?-Infinity:Infinity;return typeof av==='string'?av.localeCompare(bv)*sd:(av-bv)*sd;});}
+  if(sk){r.sort((a,b)=>{
+    let av=a[sk],bv=b[sk];
+    if(av==null)av=sd>0?-Infinity:Infinity;
+    if(bv==null)bv=sd>0?-Infinity:Infinity;
+    return typeof av==='string'?av.localeCompare(bv)*sd:(av-bv)*sd;
+  });}
   return r;
 }
 
 function renderTable(){
   const tbody=document.getElementById('tbody');tbody.innerHTML='';
-  rows().forEach(r=>{
+  getRows().forEach(r=>{
     const hp=r.pnlPct!==null;
     const cls=hp?(r.pnlPct>=0?'pos':'neg'):'lv';
     const sg=r.pnlPct>=0?'+':'';
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td class="tc">${r.ticker}</td><td class="nc" title="${r.name}">${r.name}</td><td>${r.shares.toFixed(4)}</td><td>${fe(r.entry)}</td><td>${hp?fe(r.price):'<span class="lv">—</span>'}</td><td>${hp?fe(r.value):'—'}</td><td class="${cls}">${hp?sg+r.pnlPct.toFixed(2)+' %':'—'}</td><td class="${cls}">${hp?sg+fe(r.pnlEur):'—'}</td><td><button class="db" onclick="delPos(${r.id})">✕</button></td>`;
+    tr.innerHTML=`
+      <td class="tc">${r.ticker}</td>
+      <td class="nc" title="${r.name}">${r.name}</td>
+      <td>${r.shares.toFixed(4)}</td>
+      <td>${fe(r.entry)}</td>
+      <td>${hp?fe(r.price):'<span class="lv">—</span>'}</td>
+      <td>${hp?fe(r.value):'—'}</td>
+      <td class="${cls}">${hp?sg+r.pnlPct.toFixed(2)+' %':'—'}</td>
+      <td class="${cls}">${hp?sg+fe(r.pnlEur):'—'}</td>
+      <td><button class="db" onclick="delPos(${r.id})">✕</button></td>`;
     tbody.appendChild(tr);
   });
 }
@@ -343,19 +391,36 @@ function renderCharts(){
   const total=weights.reduce((a,b)=>a+b,0);
 
   if(PC)PC.destroy();
-  PC=new Chart(document.getElementById('pie'),{type:'doughnut',data:{labels,datasets:[{data:weights,backgroundColor:colors,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'55%'}});
-  document.getElementById('pielegend').innerHTML=positions.map((p,i)=>`<span class="li"><span class="ld" style="background:${colors[i]}"></span>${p.ticker} ${total>0?((weights[i]/total)*100).toFixed(0):0}%</span>`).join('');
+  PC=new Chart(document.getElementById('pie'),{
+    type:'doughnut',
+    data:{labels,datasets:[{data:weights,backgroundColor:colors,borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'55%'}
+  });
+  document.getElementById('pielegend').innerHTML=positions.map((p,i)=>
+    `<span class="li"><span class="ld" style="background:${colors[i]}"></span>${p.ticker} ${total>0?((weights[i]/total)*100).toFixed(0):0}%</span>`
+  ).join('');
 
   const bdata=positions.map(p=>{const pr=prices[p.ticker];return pr?parseFloat(((pr-p.entry)/p.entry*100).toFixed(2)):null;});
-  const bcolors=bdata.map(v=>v===null?'#444':(v>=0?'#4ade80':'#f87171'));
-  const bh=Math.max(440,positions.length*20+60);
+  const bcolors=bdata.map(v=>v===null?'rgba(255,255,255,0.1)':(v>=0?'#4ade80':'#f87171'));
+  const bh=Math.max(460,positions.length*22+60);
   document.getElementById('barwrap').style.height=bh+'px';
 
   if(BC)BC.destroy();
-  BC=new Chart(document.getElementById('bar'),{type:'bar',data:{labels,datasets:[{data:bdata,backgroundColor:bcolors,borderRadius:3,borderWidth:0}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{callback:v=>v+'%',color:'#6b6b80',font:{size:10,family:'DM Mono'}}},y:{grid:{display:false},ticks:{color:'#6b6b80',font:{size:10,family:'DM Mono'}}}}}});
+  BC=new Chart(document.getElementById('bar'),{
+    type:'bar',
+    data:{labels,datasets:[{data:bdata,backgroundColor:bcolors,borderRadius:3,borderWidth:0}]},
+    options:{
+      indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{callback:v=>v+'%',color:'#6b6b80',font:{size:10,family:'DM Mono'}}},
+        y:{grid:{display:false},ticks:{color:'#6b6b80',font:{size:10,family:'DM Mono'}}}
+      }
+    }
+  });
 }
 
-function sort(key){
+function srt(key){
   if(sk===key)sd*=-1;else{sk=key;sd=1;}
   document.querySelectorAll('thead th').forEach(th=>th.className='');
   const idx=['ticker','name','shares','entry','price','value','pnlPct','pnlEur'].indexOf(key);
@@ -363,26 +428,34 @@ function sort(key){
   renderTable();
 }
 
-function fe(v){if(v==null)return'—';return'€'+v.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fe(v){
+  if(v==null)return'—';
+  return'€'+v.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
 
 function openModal(){document.getElementById('modal').classList.add('open');document.getElementById('ft').focus();}
-function closeModal(){document.getElementById('modal').classList.remove('open');['ft','fn','fs','fe'].forEach(id=>document.getElementById(id).value='');}
+function closeModal(){
+  document.getElementById('modal').classList.remove('open');
+  ['ft','fy','fn','fs','fe'].forEach(id=>document.getElementById(id).value='');
+}
 
 function addPos(){
   const ticker=document.getElementById('ft').value.trim().toUpperCase();
+  const yahoo=document.getElementById('fy').value.trim();
   const name=document.getElementById('fn').value.trim();
   const shares=parseFloat(document.getElementById('fs').value);
   const entry=parseFloat(document.getElementById('fe').value);
-  if(!ticker||!name||isNaN(shares)||isNaN(entry)||shares<=0||entry<=0){alert('Bitte alle Felder ausfüllen.');return;}
+  if(!ticker||!name||isNaN(shares)||isNaN(entry)||shares<=0||entry<=0){
+    alert('Bitte alle Pflichtfelder ausfüllen.');return;
+  }
   const id=positions.length>0?Math.max(...positions.map(p=>p.id))+1:1;
-  positions.push({id,ticker,name,shares,entry});
+  if(yahoo)TMAP[ticker]=yahoo;
+  positions.push({id,ticker,name,shares,entry,yahoo:yahoo||undefined});
   save();closeModal();renderTable();renderMetrics();renderCharts();
 }
 
 function delPos(id){
   if(!confirm('Position löschen?'))return;
-  const pos=positions.find(p=>p.id===id);
-  if(pos)delete prices[pos.ticker];
   positions=positions.filter(p=>p.id!==id);
   save();renderTable();renderMetrics();renderCharts();
 }
