@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio · Enzo</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #18181f;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #f0f0f5;
+    --muted: #6b6b80;
+    --accent: #c8f04a;
+    --accent2: #7b61ff;
+    --pos: #4ade80;
+    --neg: #f87171;
+    --font-head: 'Syne', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font-head); min-height: 100vh; }
+
+  /* Layout */
+  .app { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  /* Header */
+  .header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 0.5px solid var(--border); }
+  .header-left h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+  .header-left h1 span { color: var(--accent); }
+  .header-left p { font-size: 13px; color: var(--muted); margin-top: 4px; font-family: var(--font-mono); }
+  .refresh-btn { background: transparent; border: 0.5px solid var(--border2); color: var(--text); padding: 8px 16px; border-radius: 8px; font-family: var(--font-head); font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s; }
+  .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .refresh-btn.loading { opacity: 0.5; pointer-events: none; }
+  .spin { display: inline-block; animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Metrics */
+  .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 2rem; }
+  .metric { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.2rem 1.4rem; }
+  .metric-label { font-size: 11px; color: var(--muted); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .metric-value { font-size: 26px; font-weight: 700; letter-spacing: -1px; }
+  .metric-sub { font-size: 12px; font-family: var(--font-mono); margin-top: 4px; color: var(--muted); }
+  .pos { color: var(--pos); }
+  .neg { color: var(--neg); }
+
+  /* Charts row */
+  .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 2rem; }
+  .card { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.2rem 1.4rem; }
+  .card-title { font-size: 12px; color: var(--muted); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1rem; }
+
+  /* Table */
+  .table-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 2rem; }
+  .table-header { display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 1.4rem; border-bottom: 0.5px solid var(--border); }
+  .table-header span { font-size: 12px; color: var(--muted); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.5px; }
+  .add-btn { background: var(--accent); color: #0a0a0f; border: none; padding: 7px 14px; border-radius: 7px; font-family: var(--font-head); font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
+  .add-btn:hover { opacity: 0.85; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th { padding: 10px 14px; text-align: left; font-size: 11px; font-family: var(--font-mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 0.5px solid var(--border); font-weight: 400; }
+  tbody tr { border-bottom: 0.5px solid var(--border); transition: background 0.15s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--surface2); }
+  tbody td { padding: 13px 14px; font-family: var(--font-mono); font-size: 13px; }
+  .ticker-cell { font-weight: 500; color: var(--accent); font-size: 14px; }
+  .name-cell { color: var(--text); font-family: var(--font-head); font-size: 13px; }
+  .badge { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 4px; background: rgba(255,255,255,0.06); color: var(--muted); font-family: var(--font-mono); margin-left: 6px; }
+  .del-btn { background: transparent; border: 0.5px solid rgba(248,113,113,0.3); color: var(--neg); padding: 4px 10px; border-radius: 5px; font-size: 11px; cursor: pointer; font-family: var(--font-mono); transition: all 0.15s; }
+  .del-btn:hover { background: rgba(248,113,113,0.1); }
+  .loading-cell { color: var(--muted); font-style: italic; }
+
+  /* Events */
+  .events-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 2rem; }
+  .event-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 0.5px solid var(--border); align-items: flex-start; }
+  .event-item:last-child { border-bottom: none; }
+  .event-dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+  .event-text { font-size: 13px; color: var(--text); font-family: var(--font-head); }
+  .event-date { font-size: 11px; color: var(--muted); font-family: var(--font-mono); margin-top: 3px; }
+
+  /* Modal */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--surface); border: 0.5px solid var(--border2); border-radius: 16px; padding: 2rem; width: 420px; max-width: 95vw; }
+  .modal h2 { font-size: 18px; font-weight: 600; margin-bottom: 1.5rem; }
+  .form-group { margin-bottom: 1rem; }
+  .form-group label { display: block; font-size: 11px; color: var(--muted); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .form-group input { width: 100%; background: var(--bg); border: 0.5px solid var(--border2); color: var(--text); padding: 10px 12px; border-radius: 8px; font-family: var(--font-mono); font-size: 14px; outline: none; transition: border-color 0.2s; }
+  .form-group input:focus { border-color: var(--accent); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .modal-actions { display: flex; gap: 10px; margin-top: 1.5rem; }
+  .btn-save { flex: 1; background: var(--accent); color: #0a0a0f; border: none; padding: 11px; border-radius: 8px; font-family: var(--font-head); font-size: 14px; font-weight: 600; cursor: pointer; }
+  .btn-cancel { flex: 1; background: transparent; color: var(--muted); border: 0.5px solid var(--border2); padding: 11px; border-radius: 8px; font-family: var(--font-head); font-size: 14px; cursor: pointer; }
+
+  /* Status bar */
+  .status { font-size: 11px; color: var(--muted); font-family: var(--font-mono); text-align: right; margin-bottom: 1rem; }
+  .status .ok { color: var(--pos); }
+  .status .err { color: var(--neg); }
+
+  /* Legend */
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); font-family: var(--font-mono); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+  @media (max-width: 700px) {
+    .metrics { grid-template-columns: 1fr 1fr; }
+    .charts-row { grid-template-columns: 1fr; }
+    .events-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <h1>Portfolio <span>·</span> Enzo</h1>
+      <p id="last-update">Noch nicht aktualisiert</p>
+    </div>
+    <button class="refresh-btn" id="refreshBtn" onclick="fetchAllPrices()">
+      <span id="refresh-icon">↻</span> Aktualisieren
+    </button>
+  </div>
+
+  <!-- Metrics -->
+  <div class="metrics">
+    <div class="metric">
+      <div class="metric-label">Gesamtwert</div>
+      <div class="metric-value" id="total-value">—</div>
+      <div class="metric-sub" id="total-invested">Investiert: —</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Gesamtrendite</div>
+      <div class="metric-value" id="total-return">—</div>
+      <div class="metric-sub" id="total-return-eur">—</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Bester Wert</div>
+      <div class="metric-value" id="best-ticker" style="font-size:18px;">—</div>
+      <div class="metric-sub pos" id="best-pnl">—</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Schwächster Wert</div>
+      <div class="metric-value" id="worst-ticker" style="font-size:18px;">—</div>
+      <div class="metric-sub neg" id="worst-pnl">—</div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="charts-row">
+    <div class="card">
+      <div class="card-title">Gewichtung</div>
+      <div style="position:relative;height:180px;"><canvas id="pieChart" role="img" aria-label="Portfolio Gewichtung"></canvas></div>
+      <div class="legend" id="pie-legend"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Performance je Position (%)</div>
+      <div style="position:relative;height:180px;"><canvas id="barChart" role="img" aria-label="Performance je Position"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-card">
+    <div class="table-header">
+      <span>Positionen</span>
+      <button class="add-btn" onclick="openModal()">+ Position hinzufügen</button>
+    </div>
+    <div class="status" id="api-status" style="padding: 0 1.4rem;"></div>
+    <table>
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>Name</th>
+          <th>Stück</th>
+          <th>Einstieg</th>
+          <th>Aktuell</th>
+          <th>Wert</th>
+          <th>P&L %</th>
+          <th>P&L €</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="positions-tbody"></tbody>
+    </table>
+  </div>
+
+  <!-- Events -->
+  <div class="events-grid">
+    <div class="card">
+      <div class="card-title">Wichtige Ereignisse</div>
+      <div id="events-list">
+        <div class="event-item">
+          <div class="event-dot" style="background:#c8f04a"></div>
+          <div>
+            <div class="event-text">Amazon — Q1 Earnings abgeschlossen, Ergebnis auswerten</div>
+            <div class="event-date">Mai 2026 · AMZN</div>
+          </div>
+        </div>
+        <div class="event-item">
+          <div class="event-dot" style="background:#f87171"></div>
+          <div>
+            <div class="event-text">Rheinmetall — NATO-Budget & Ukraine-Entwicklung beobachten</div>
+            <div class="event-date">Laufend · RHM</div>
+          </div>
+        </div>
+        <div class="event-item">
+          <div class="event-dot" style="background:#7b61ff"></div>
+          <div>
+            <div class="event-text">Microsoft Build Conference — AI-Ankündigungen erwartet</div>
+            <div class="event-date">Mai 2026 · MSFT</div>
+          </div>
+        </div>
+        <div class="event-item">
+          <div class="event-dot" style="background:#60a5fa"></div>
+          <div>
+            <div class="event-text">Meta Q2 Earnings — Wichtiger Katalysator</div>
+            <div class="event-date">Juli 2026 · META</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Notizen</div>
+      <textarea id="notes-area" style="width:100%;height:160px;background:transparent;border:0.5px solid var(--border);color:var(--text);font-family:var(--font-head);font-size:13px;padding:10px;border-radius:8px;resize:none;outline:none;line-height:1.6;" placeholder="Eigene Notizen hier eintragen..."></textarea>
+      <button onclick="saveNotes()" style="margin-top:8px;background:transparent;border:0.5px solid var(--border2);color:var(--muted);padding:6px 14px;border-radius:6px;font-family:var(--font-mono);font-size:11px;cursor:pointer;">Speichern</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2>Position hinzufügen</h2>
+    <div class="form-group">
+      <label>Ticker Symbol (z.B. AAPL, RHM.DE)</label>
+      <input type="text" id="inp-ticker" placeholder="META" style="text-transform:uppercase">
+    </div>
+    <div class="form-group">
+      <label>Name</label>
+      <input type="text" id="inp-name" placeholder="Meta Platforms">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Stückzahl</label>
+        <input type="number" id="inp-shares" placeholder="10" min="0.001" step="0.001">
+      </div>
+      <div class="form-group">
+        <label>Einstiegspreis (€)</label>
+        <input type="number" id="inp-entry" placeholder="548.00" step="0.01">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Sektor/Tag (optional)</label>
+      <input type="text" id="inp-sector" placeholder="US Tech">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Abbrechen</button>
+      <button class="btn-save" onclick="addPosition()">Hinzufügen</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_KEY = '33ZI86B7VCSHWLWH';
+const COLORS = ['#c8f04a','#7b61ff','#60a5fa','#f87171','#fb923c','#34d399','#f472b6','#a78bfa','#fbbf24','#2dd4bf'];
+
+// Default positions
+const DEFAULT_POSITIONS = [
+  { ticker: 'META', name: 'Meta Platforms', shares: 3.5, entry: 548, sector: 'US Tech' },
+  { ticker: 'AMZN', name: 'Amazon', shares: 10, entry: 192, sector: 'US Tech' },
+  { ticker: 'MSFT', name: 'Microsoft', shares: 5, entry: 385, sector: 'US Tech' },
+  { ticker: 'GOOGL', name: 'Alphabet', shares: 9, entry: 167, sector: 'US Tech' },
+  { ticker: 'RHM.DE', name: 'Rheinmetall', shares: 2.3, entry: 512, sector: 'DE Defense' },
+];
+
+let positions = [];
+let prices = {};
+let pieChart = null;
+let barChart = null;
+
+function loadData() {
+  const saved = localStorage.getItem('enzo_portfolio');
+  if (saved) {
+    positions = JSON.parse(saved);
+  } else {
+    positions = DEFAULT_POSITIONS.map((p, i) => ({ ...p, id: i + 1 }));
+    saveData();
+  }
+  const notes = localStorage.getItem('enzo_notes');
+  if (notes) document.getElementById('notes-area').value = notes;
+}
+
+function saveData() {
+  localStorage.setItem('enzo_portfolio', JSON.stringify(positions));
+}
+
+function saveNotes() {
+  localStorage.setItem('enzo_notes', document.getElementById('notes-area').value);
+  const btn = event.target;
+  btn.textContent = '✓ Gespeichert';
+  setTimeout(() => btn.textContent = 'Speichern', 1500);
+}
+
+// Alpha Vantage fetch (with EUR conversion for DE stocks)
+async function fetchPrice(ticker) {
+  // For German stocks like RHM.DE use the symbol as-is
+  const symbol = ticker;
+  try {
+    const res = await fetch(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${API_KEY}`);
+    const data = await res.json();
+    const quote = data['Global Quote'];
+    if (quote && quote['05. price']) {
+      return parseFloat(quote['05. price']);
+    }
+    return null;
+  } catch (e) {
+    return null;
+  }
+}
+
+async function fetchAllPrices() {
+  const btn = document.getElementById('refreshBtn');
+  const icon = document.getElementById('refresh-icon');
+  btn.classList.add('loading');
+  icon.innerHTML = '<span class="spin">↻</span>';
+
+  const statusEl = document.getElementById('api-status');
+  statusEl.innerHTML = 'Kurse werden geladen...';
+
+  let fetched = 0;
+  let failed = 0;
+
+  // Fetch sequentially to respect API limits
+  for (const pos of positions) {
+    const price = await fetchPrice(pos.ticker);
+    if (price !== null) {
+      prices[pos.ticker] = price;
+      fetched++;
+    } else {
+      failed++;
+    }
+    renderTable();
+    renderMetrics();
+    renderCharts();
+  }
+
+  const now = new Date().toLocaleString('de-DE');
+  document.getElementById('last-update').textContent = `Aktualisiert: ${now}`;
+
+  if (failed > 0) {
+    statusEl.innerHTML = `<span class="ok">${fetched} geladen</span> · <span class="err">${failed} nicht verfügbar (API-Limit oder falsches Symbol)</span>`;
+  } else {
+    statusEl.innerHTML = `<span class="ok">Alle ${fetched} Kurse aktuell ✓</span>`;
+  }
+
+  btn.classList.remove('loading');
+  icon.innerHTML = '↻';
+}
+
+function renderTable() {
+  const tbody = document.getElementById('positions-tbody');
+  tbody.innerHTML = '';
+
+  positions.forEach(pos => {
+    const price = prices[pos.ticker];
+    const hasPrice = price !== null && price !== undefined;
+    const invested = pos.shares * pos.entry;
+    const currentVal = hasPrice ? pos.shares * price : null;
+    const pnlEur = hasPrice ? currentVal - invested : null;
+    const pnlPct = hasPrice ? ((price - pos.entry) / pos.entry) * 100 : null;
+    const pnlClass = pnlPct >= 0 ? 'pos' : 'neg';
+    const pnlSign = pnlPct >= 0 ? '+' : '';
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="ticker-cell">${pos.ticker}</td>
+      <td class="name-cell">${pos.name} <span class="badge">${pos.sector || ''}</span></td>
+      <td>${pos.shares}</td>
+      <td>${formatEur(pos.entry)}</td>
+      <td>${hasPrice ? formatEur(price) : '<span class="loading-cell">—</span>'}</td>
+      <td>${hasPrice ? formatEur(currentVal) : '—'}</td>
+      <td class="${hasPrice ? pnlClass : ''}">${hasPrice ? pnlSign + pnlPct.toFixed(2) + ' %' : '—'}</td>
+      <td class="${hasPrice ? pnlClass : ''}">${hasPrice ? pnlSign + formatEur(pnlEur) : '—'}</td>
+      <td><button class="del-btn" onclick="deletePosition(${pos.id})">Löschen</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderMetrics() {
+  const positionsWithPrices = positions.filter(p => prices[p.ticker]);
+  if (positionsWithPrices.length === 0) return;
+
+  let totalInvested = 0;
+  let totalCurrent = 0;
+  let bestPct = -Infinity, worstPct = Infinity;
+  let bestTicker = '', worstTicker = '';
+
+  positions.forEach(pos => {
+    const price = prices[pos.ticker];
+    totalInvested += pos.shares * pos.entry;
+    if (price) {
+      totalCurrent += pos.shares * price;
+      const pct = ((price - pos.entry) / pos.entry) * 100;
+      if (pct > bestPct) { bestPct = pct; bestTicker = pos.ticker; }
+      if (pct < worstPct) { worstPct = pct; worstTicker = pos.ticker; }
+    }
+  });
+
+  const totalReturn = totalCurrent > 0 ? ((totalCurrent - totalInvested) / totalInvested) * 100 : 0;
+  const totalReturnEur = totalCurrent - totalInvested;
+
+  document.getElementById('total-value').textContent = formatEur(totalCurrent || totalInvested);
+  document.getElementById('total-invested').textContent = `Investiert: ${formatEur(totalInvested)}`;
+  document.getElementById('total-return').textContent = (totalReturn >= 0 ? '+' : '') + totalReturn.toFixed(2) + ' %';
+  document.getElementById('total-return').className = 'metric-value ' + (totalReturn >= 0 ? 'pos' : 'neg');
+  document.getElementById('total-return-eur').textContent = (totalReturnEur >= 0 ? '+' : '') + formatEur(totalReturnEur);
+
+  if (bestTicker) {
+    document.getElementById('best-ticker').textContent = bestTicker;
+    document.getElementById('best-pnl').textContent = '+' + bestPct.toFixed(2) + ' %';
+  }
+  if (worstTicker) {
+    document.getElementById('worst-ticker').textContent = worstTicker;
+    document.getElementById('worst-pnl').textContent = (worstPct >= 0 ? '+' : '') + worstPct.toFixed(2) + ' %';
+  }
+}
+
+function renderCharts() {
+  const labels = positions.map(p => p.ticker);
+  const colors = positions.map((_, i) => COLORS[i % COLORS.length]);
+
+  // Pie chart — weight by invested value
+  const weights = positions.map(p => {
+    const price = prices[p.ticker];
+    return price ? p.shares * price : p.shares * p.entry;
+  });
+
+  if (pieChart) pieChart.destroy();
+  pieChart = new Chart(document.getElementById('pieChart'), {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data: weights, backgroundColor: colors, borderWidth: 0 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '60%' }
+  });
+
+  // Legend
+  const legendEl = document.getElementById('pie-legend');
+  legendEl.innerHTML = positions.map((p, i) => {
+    const w = weights[i];
+    const total = weights.reduce((a, b) => a + b, 0);
+    const pct = total > 0 ? ((w / total) * 100).toFixed(0) : 0;
+    return `<span class="legend-item"><span class="legend-dot" style="background:${colors[i]}"></span>${p.ticker} ${pct}%</span>`;
+  }).join('');
+
+  // Bar chart — performance
+  const barData = positions.map(p => {
+    const price = prices[p.ticker];
+    if (!price) return 0;
+    return parseFloat(((price - p.entry) / p.entry * 100).toFixed(2));
+  });
+
+  const barColors = barData.map(v => v >= 0 ? '#4ade80' : '#f87171');
+
+  if (barChart) barChart.destroy();
+  barChart = new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{ data: barData, backgroundColor: barColors, borderRadius: 4, borderWidth: 0 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: {
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          ticks: { callback: v => v + '%', color: '#6b6b80', font: { size: 11, family: 'DM Mono' } }
+        },
+        x: {
+          grid: { display: false },
+          ticks: { color: '#6b6b80', font: { size: 11, family: 'DM Mono' } }
+        }
+      }
+    }
+  });
+}
+
+function formatEur(val) {
+  if (val === null || val === undefined) return '—';
+  return '€' + val.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+// Modal
+function openModal() {
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('inp-ticker').focus();
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  ['inp-ticker','inp-name','inp-shares','inp-entry','inp-sector'].forEach(id => document.getElementById(id).value = '');
+}
+function addPosition() {
+  const ticker = document.getElementById('inp-ticker').value.trim().toUpperCase();
+  const name = document.getElementById('inp-name').value.trim();
+  const shares = parseFloat(document.getElementById('inp-shares').value);
+  const entry = parseFloat(document.getElementById('inp-entry').value);
+  const sector = document.getElementById('inp-sector').value.trim();
+
+  if (!ticker || !name || isNaN(shares) || isNaN(entry) || shares <= 0 || entry <= 0) {
+    alert('Bitte alle Pflichtfelder ausfüllen.');
+    return;
+  }
+
+  const newId = positions.length > 0 ? Math.max(...positions.map(p => p.id)) + 1 : 1;
+  positions.push({ id: newId, ticker, name, shares, entry, sector });
+  saveData();
+  closeModal();
+  renderTable();
+  renderMetrics();
+  renderCharts();
+}
+function deletePosition(id) {
+  if (!confirm('Position wirklich löschen?')) return;
+  positions = positions.filter(p => p.id !== id);
+  delete prices[positions.find ? '' : ''];
+  saveData();
+  renderTable();
+  renderMetrics();
+  renderCharts();
+}
+
+// Close modal on overlay click
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// Init
+loadData();
+renderTable();
+renderMetrics();
+renderCharts();
+
+// Auto-refresh every 5 minutes
+setInterval(fetchAllPrices, 5 * 60 * 1000);
+
+// Initial fetch
+fetchAllPrices();
+</script>
+</body>
+</html>
